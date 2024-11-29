@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.13)
 set(PROJECT_NAME Graphic_Study)
 set(CMAKE_CXX_STANDARD 17)
 
+
 set(STUDY_FILE_NAME point_example.cpp)
 
 set(WINDOW_NAME ${STUDY_FILE_NAME})
@@ -16,7 +17,11 @@ set(WINDOW_HEIGHT 540)
 #포인트 예시 - point_example.cpp
 
 project(${PROJECT_NAME})
-add_executable(${PROJECT_NAME} src/${STUDY_FILE_NAME})
+add_executable(${PROJECT_NAME} 
+    src/${STUDY_FILE_NAME}
+    src/common.cpp src/common.h
+    src/shader.cpp src/shader.h
+    )
 
 include(Dependency.cmake)
 
@@ -31,3 +36,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 )
 
 add_dependencies(${PROJECT_NAME} ${DEP_LIST})
+
+if (MSVC)
+    add_compile_options(/utf-8)
+endif()

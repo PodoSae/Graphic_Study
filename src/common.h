@@ -8,6 +8,20 @@
 #include <glfw/glfw3.h>
 #include <spdlog/spdlog.h>
 
+// 매크로 define 에서 \ 를 사용하여 아래 줄도 define 에 포함시킨다
+// ## 은 klassName 부분과 그 뒷부분을 붙혀주는 문자이다
+#define CLASS_PTR(klassName) \
+class klassName; \
+using klassName ## UPtr = std::unique_ptr<klassName>; \
+using klassName ## Ptr = std::shared_ptr<klassName>; \
+using klassName ## WPtr = std::weak_ptr<klassName>;
+
+// ex) CLASS_PTR(Shader) << 예시처럼 타이핑 하면 아래의 내용이 따라온다고 생각하면 된다
+// class Shader;
+// using ShaderUPtr = std::unique_ptr<klassName>; 
+// using ShaderPtr = std::shared_ptr<klassName>; 
+// using ShaderWPtr = std::weak_ptr<klassName>;
+
 std::optional <std::string> LoadTextFile(const std::string& filename);
 
 #endif
