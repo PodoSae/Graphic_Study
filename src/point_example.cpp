@@ -1,5 +1,4 @@
-#include "common.h"
-#include "shader.h"
+#include "context.h"
 
 #include <spdlog/spdlog.h>
 #include <glad/glad.h>
@@ -77,10 +76,22 @@ int main(int argc, const char** argv)
     auto glVersion = glGetString(GL_VERSION);
     SPDLOG_INFO("OpenGl context version: {}", reinterpret_cast<const char*>(glVersion));
 
-    auto vertextShader = Shader::CreateFromFile("./shader/simple.vs", GL_VERTEX_SHADER);
-    auto fragmentShader = Shader::CreateFromFile("./shader/simple.fs" , GL_FRAGMENT_SHADER);
-    SPDLOG_INFO("vertex shader id: {}" , vertextShader->Get());
-    SPDLOG_INFO("fragment shader id: {}" , fragmentShader->Get());
+    auto context = Context::Create();
+    if (!context)
+    {
+        SPDLOG_ERROR("failed to create context");
+        glfwTerminate();
+        return -1;
+
+    }
+
+    ShaderPtr vertShader = Shader::CreateFromFile("./shader/simple.vs", GL_VERTEX_SHADER);
+    ShaderPtr fragShader = Shader::CreateFromFile("./shader/simple.fs" , GL_FRAGMENT_SHADER);
+    SPDLOG_INFO("vertex shader id: {}" , vertShader->Get());
+    SPDLOG_INFO("fragment shader id: {}" , fragShader->Get());
+
+    auto program = Program::Create({fragShader, vertShader});
+    SPDLOG_INFO("program id: {}" , program ->Get());
 
     OnFramebufferSizeChange(window, WINDOW_WIDTH, WINDOW_HEIGHT);
     glfwSetFramebufferSizeCallback(window , OnFramebufferSizeChange);
@@ -92,9 +103,15 @@ int main(int argc, const char** argv)
         glfwPollEvents();
         glClearColor(0.0f, 0.1f, 0.2f, 0.0f);   // 컬러 프레임 버퍼 화면을 클리어 할 색상 지정 - State Setting Function
 
-        glClear(GL_COLOR_BUFFER_BIT);           // 프레임 버퍼 클리어 - State Using Function
+        context -> Render();
+        // -> Render 내부에 있는 내용     //glClear(GL_COLOR_BUFFER_BIT);           // 프레임 버퍼 클리어 - State Using Function
         glfwSwapBuffers(window);
     }
+    //context 가 가지고 있던 메모리 할당 해제 
+    // context = nullptr; <- 로 대체 가능
+    context.reset();
+
+
 
     glfwTerminate();
     return 0;
