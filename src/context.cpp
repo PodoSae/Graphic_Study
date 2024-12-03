@@ -11,21 +11,12 @@ ContextUPtr Context::Create()
 
 bool Context::Init()
 {
-    // 사각형 예시
-    // float vertices[] = {
-    //     0.5f, 0.5f, 0.0f,
-    //     0.5f, -0.5f, 0.0f,
-    //     -0.5f, 0.5f, 0.0f,
-    //     0.5f, -0.5f, 0.0f,
-    //     -0.5f, -0.5f, 0.0f,
-    //     -0.5f, 0.5f, 0.0f,
-    // };
 
-    float vertices[] ={
-        0.5f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f,
+	float vertices[] = {
+        0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // top right, red
+        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right, green
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left, blue
+        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, // top left, yellow
     };
 
     uint32_t indices[] = {
@@ -34,33 +25,21 @@ bool Context::Init()
     };
 
     m_vertexLayout = VertexLayout::Create();
-    // glGenVertexArrays(1, &m_vertexArrayObject);
-    // glBindVertexArray(m_vertexArrayObject);
 
     m_vertexBuffer = Buffer::CreateWithData(GL_ARRAY_BUFFER,
-        GL_STATIC_DRAW, vertices , sizeof(float)* 12);
+        GL_STATIC_DRAW, vertices , sizeof(float)* 24);
 
-    // 위의 줄로 리펙토링함
-    // glGenBuffers(1, &m_vertexBuffer);
-    // glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(float)* 12 , vertices, GL_STATIC_DRAW);
 
-    m_vertexLayout->SetAttrib(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3 , 0);
+    //m_vertexLayout->SetAttrib(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3 , 0);
+    m_vertexLayout->SetAttrib(0, 3, GL_FLOAT, GL_FALSE,sizeof(float) * 6, 0);
+    m_vertexLayout->SetAttrib(1, 3, GL_FLOAT, GL_FALSE,sizeof(float) * 6, sizeof(float) * 3);
 
-    // glEnableVertexAttribArray(0);
-    // glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE, sizeof(float)* 3, 0);
 
     m_indexBuffer = Buffer::CreateWithData(GL_ELEMENT_ARRAY_BUFFER,
         GL_STATIC_DRAW, indices, sizeof(uint32_t) * 6);
 
-    // 위의 줄로 리펙토링함
-    // glGenBuffers(1, &m_indexBuffer);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 6,
-    //     indices, GL_STATIC_DRAW);
-
-    ShaderPtr vertShader = Shader::CreateFromFile("./shader/simple.vs", GL_VERTEX_SHADER);
-    ShaderPtr fragShader = Shader::CreateFromFile("./shader/simple.fs", GL_FRAGMENT_SHADER);
+    ShaderPtr vertShader = Shader::CreateFromFile("./shader/per_vertex_color.vs", GL_VERTEX_SHADER);
+    ShaderPtr fragShader = Shader::CreateFromFile("./shader/per_vertex_color.fs", GL_FRAGMENT_SHADER);
     
     if (!vertShader || !fragShader)
         return false;
@@ -76,20 +55,14 @@ bool Context::Init()
 
     glClearColor(0.0f , 0.1f, 0.2f, 0.0f);
 
-    // uint32_t vao = 0;
-    // glGenVertexArrays(1, &vao);
-    // glBindVertexArray(vao);
 
     return true;
 }
 
 void Context::Render()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT);
+  m_program->Use();
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-    //glUseProgram(m_program->Get());
-    m_program->Use();
-
-    // glDrawArrays(GL_TRIANGLES, 0 , 6); // GL_POINTS <- 점
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT , 0);
 }
