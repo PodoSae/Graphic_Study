@@ -1,4 +1,5 @@
 #include "context.h"
+#include "image.h"
 
 ContextUPtr Context::Create()
 {
@@ -55,6 +56,11 @@ bool Context::Init()
 
     glClearColor(0.0f , 0.1f, 0.2f, 0.0f);
 
+    auto image = Image::Load("./images/container.jpg");
+    if (!image)
+        return false;
+    SPDLOG_INFO("image: {}x{}, {} channels",
+                image->GetWidth(), image->GetHeight(), image->GetChannelCount());
 
     return true;
 }

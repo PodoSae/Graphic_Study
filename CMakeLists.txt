@@ -4,7 +4,7 @@ set(PROJECT_NAME Graphic_Study)
 set(CMAKE_CXX_STANDARD 17)
 
 
-set(STUDY_FILE_NAME point_example.cpp)
+set(STUDY_FILE_NAME triangle_example.cpp)
 
 set(WINDOW_NAME ${STUDY_FILE_NAME})
 set(WINDOW_WIDTH 960)
@@ -25,7 +25,8 @@ add_executable(${PROJECT_NAME}
     src/context.cpp src/context.h
     src/buffer.cpp src/buffer.h
     src/vertex_layout.cpp src/vertex_layout.h
-    )
+    src/image.cpp src/image.h
+    )   
 
 include(Dependency.cmake)
 
