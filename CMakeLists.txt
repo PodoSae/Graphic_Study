@@ -4,7 +4,7 @@ set(PROJECT_NAME Graphic_Study)
 set(CMAKE_CXX_STANDARD 17)
 
 
-set(STUDY_FILE_NAME triangle_example.cpp)
+set(STUDY_FILE_NAME transformation_example.cpp)
 
 set(WINDOW_NAME ${STUDY_FILE_NAME})
 set(WINDOW_WIDTH 960)
@@ -15,6 +15,8 @@ set(WINDOW_HEIGHT 540)
 #최초 - main.cpp
 #첫번째 예시 - first_example.cpp
 #포인트 예시 - point_example.cpp
+#삼각형 부터 텍스쳐 예시 - triangle_example.cpp
+
 
 project(${PROJECT_NAME})
 add_executable(${PROJECT_NAME} 

@@ -7,7 +7,9 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 #include <spdlog/spdlog.h>
-
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 // 매크로 define 에서 \ 를 사용하여 아래 줄도 define 에 포함시킨다
 // ## 은 klassName 부분과 그 뒷부분을 붙혀주는 문자이다
 #define CLASS_PTR(klassName) \
