@@ -8,8 +8,11 @@
 
 void OnFramebufferSizeChange(GLFWwindow* window, int width, int height)
 {
-    SPDLOG_INFO("framebuffer size changed: ({} x {})", width , height ); 
-    glViewport(0, 0, width, height); //OpenGL이 그림을 그릴 화면의 위치및 크기 설정 - State Setting Function
+    SPDLOG_INFO("framebuffer size changed: ({} x {})", width, height);
+    auto context = reinterpret_cast<Context *>(glfwGetWindowUserPointer(window));
+    // glViewport(0, 0, width, height); //OpenGL이 그림을 그릴 화면의 위치및 크기 설정 - State Setting Function
+    
+    context->Reshape(width, height);
 }
 
 void OnKeyEvent(GLFWwindow* window,
@@ -85,6 +88,8 @@ int main(int argc, const char** argv)
 
     }
 
+    
+
     ShaderPtr vertShader = Shader::CreateFromFile("./shader/simple.vs", GL_VERTEX_SHADER);
     ShaderPtr fragShader = Shader::CreateFromFile("./shader/simple.fs" , GL_FRAGMENT_SHADER);
     SPDLOG_INFO("vertex shader id: {}" , vertShader->Get());
@@ -92,6 +97,8 @@ int main(int argc, const char** argv)
 
     auto program = Program::Create({fragShader, vertShader});
     SPDLOG_INFO("program id: {}" , program ->Get());
+
+    glfwSetWindowUserPointer(window, context.get());
 
     OnFramebufferSizeChange(window, WINDOW_WIDTH, WINDOW_HEIGHT);
     glfwSetFramebufferSizeCallback(window , OnFramebufferSizeChange);
@@ -103,6 +110,7 @@ int main(int argc, const char** argv)
         glfwPollEvents();
         glClearColor(0.0f, 0.1f, 0.2f, 0.0f);   // 컬러 프레임 버퍼 화면을 클리어 할 색상 지정 - State Setting Function
 
+        context->ProcessInput(window);
         context -> Render();
         // -> Render 내부에 있는 내용     //glClear(GL_COLOR_BUFFER_BIT);           // 프레임 버퍼 클리어 - State Using Function
         glfwSwapBuffers(window);
